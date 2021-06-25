@@ -25,14 +25,14 @@ public class DeptController {
     @GetMapping
     public Map<String, Object> depts() {
         List<Dept> depts = deptService.list();
-        return message.message(true, depts);
+        return message.message(true, "请求成功", "dept", depts);
     }
 
     // 根据id获取dept
     @GetMapping("/{id}")
     public Map<String, Object> dept(@PathVariable Long id) {
         Dept dept = deptService.getById(id);
-        return message.message(true, dept);
+        return message.message(true, "请求成功", "dept", dept);
     }
 
     // 添加dept
@@ -45,10 +45,10 @@ public class DeptController {
         Dept one = deptService.getOne(wrapper);
         if (one == null) {
             deptService.save(dept);
-            return message.message(true, "添加系别成功");
+            return message.message(true, "添加系别成功", "", null);
         }
 
-        return message.message(true, "error, 该系已存在");
+        return message.message(true, "error, 该系已存在", "", null);
     }
 
     // 删除
@@ -56,8 +56,8 @@ public class DeptController {
     public Map<String, Object> delDept(@PathVariable Long id) {
         boolean remove = deptService.removeById(id);
         if (remove) {
-            return message.message(true, "删除成功");
+            return message.message(true, "删除成功", "", null);
         }
-        return message.message(true, "error, 删除失败");
+        return message.message(true, "error, 删除失败", "", null);
     }
 }

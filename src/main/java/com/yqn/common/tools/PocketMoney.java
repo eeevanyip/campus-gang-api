@@ -25,8 +25,8 @@ public class PocketMoney {
                 .eq("student_id", studentId);
         boolean update = userService.update(wrapper);
         if (update) {
-            return tools.message(true, "success");
+            return tools.message(true, "success", "", null);
         }
-        return tools.message(false, "error");
+        return tools.message(false, "error", "", null);
     }
 }

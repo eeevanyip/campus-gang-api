@@ -36,9 +36,9 @@ public class UserController {
         User user = userService.getOne(wrapper);
         if (user != null) {
             session.setAttribute("user", user);
-            return message.message(true, user);
+            return message.message(true, "请求成功", "user", user);
         }
-        return message.message(false, "账号或密码错误");
+        return message.message(false, "账号或密码错误", "", null);
     }
 
     // 获取全部User
@@ -47,21 +47,21 @@ public class UserController {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         if (studentId != null) {
             wrapper.eq("student_id", studentId);
-            return message.message(true, userService.list(wrapper));
+            return message.message(true, "请求成功", "user", userService.list(wrapper));
         }
         if (username != null) {
             wrapper.like("username", username);
-            return message.message(true, userService.list(wrapper));
+            return message.message(true, "请求成功", "user", userService.list(wrapper));
         }
         List<User> users = userService.list();
-        return message.message(true, users);
+        return message.message(true, "请求成功", "user", users);
     }
 
     // 根据id获取User
     @GetMapping("/{id}")
     public Map<String, Object> user(@PathVariable String id) {
         User user = userService.getById(id);
-        return message.message(true, user);
+        return message.message(true, "请求成功", "user", user);
     }
 
     // 添加User
@@ -74,9 +74,9 @@ public class UserController {
         User one = userService.getOne(wrapper);
         if (one == null) {
             userService.save(user);
-            return message.message(true, "注册成功");
+            return message.message(true, "注册成功", "", null);
         }
-        return message.message(false, "error, 该学号已被注册");
+        return message.message(false, "error, 该学号已被注册", "", null);
     }
 
     // 更新信息
@@ -84,9 +84,9 @@ public class UserController {
     public Map<String, Object> putUser(User user) {
         boolean update = userService.updateById(user);
         if (update) {
-            return message.message(true, "更新信息成功");
+            return message.message(true, "更新信息成功", "", null);
         }
-        return message.message(false, "error, 更新信息失败");
+        return message.message(false, "error, 更新信息失败", "", null);
     }
 
     // 零钱转入
