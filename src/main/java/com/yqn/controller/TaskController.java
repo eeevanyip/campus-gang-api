@@ -7,6 +7,7 @@ import com.yqn.pojo.User;
 import com.yqn.service.TaskService;
 import com.yqn.common.tools.MessageTools;
 import com.yqn.common.tools.PocketMoney;
+import com.yqn.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +26,16 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private MessageTools message;
     @Autowired
     private PocketMoney money;
 
     // 获取当前登录user所在学校的任务
     @GetMapping
-    public Map<String, Object> tasks(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        // log.info("user: {}", user);
+    public Map<String, Object> tasks(Long id) {
+        User user = userService.getById(id);
         if (user != null) {
             QueryWrapper<Task> wrapper = new QueryWrapper<>();
             wrapper.eq("user_school_id", user.getSchool().getId());
@@ -52,34 +54,31 @@ public class TaskController {
 
     // 当前登录User, 已发布的task
     @GetMapping("/published")
-    public Map<String, Object> published(HttpSession session) {
-        return message.message(true, "请求成功", "task", publishAndAcceptMethods(session, "publish_user_id"));
+    public Map<String, Object> published(Long id) {
+        return message.message(true, "请求成功", "task", publishAndAcceptMethods(id, "publish_user_id"));
     }
 
     // 当前登录User, 已接受的task
     @GetMapping("/accepted")
-    public Map<String, Object> accepted(HttpSession session) {
-        return message.message(true, "请求成功", "task", publishAndAcceptMethods(session, "accept_user_id"));
+    public Map<String, Object> accepted(Long id) {
+        return message.message(true, "请求成功", "task", publishAndAcceptMethods(id, "accept_user_id"));
     }
 
     // 获取发布和接受的task
-    public List<Task> publishAndAcceptMethods(HttpSession session, String field) {
-        User user = (User) session.getAttribute("user");
+    public List<Task> publishAndAcceptMethods(Long id, String field) {
+        // User user = (User) session.getAttribute("user");
         QueryWrapper<Task> wrapper = new QueryWrapper<>();
-        wrapper.eq(field, user.getId());
+        wrapper.eq(field, id);
         return taskService.list(wrapper);
     }
 
     // 发布新task
     @PostMapping
-    public Map<String, Object> saveTask(Task task, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
+    public Map<String, Object> saveTask(Task task) {
+        User user = userService.getById(task.getPublishId());
         if (user.getBalance() >= task.getReward()) {
-            task.setPublishId(user.getId());
-            task.setSchoolId(user.getSchool().getId());
-            boolean b = taskService.save(task);
-            if (b) {
+            boolean save = taskService.save(task);
+            if (save) {
                 money.transfer("balance=balance-", task.getReward(), user.getStudentId());
             }
             return message.message(true, "发布任务成功", "", null);
@@ -90,13 +89,12 @@ public class TaskController {
 
     // 发布人取消task
     @DeleteMapping("/{id}")
-    public Map<String, Object> delTask(@PathVariable Long id, HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public Map<String, Object> delTask(@PathVariable Long id) {
         Task task = taskService.getById(id);
         System.out.println(task);
         if (task != null) {
             taskService.removeById(id);
-            money.transfer("balance=balance+", task.getReward(), user.getStudentId());
+            money.transfer("balance=balance+", task.getReward(), task.getPublish().getStudentId());
         }
         return message.message(true, "取消任务成功", "", null);
     }
@@ -118,11 +116,10 @@ public class TaskController {
     }
 
     // 接单人接受task
-    @PutMapping("/takerAccept/{id}")
-    public Map<String, Object> takerAccept(@PathVariable Long id, HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    @PutMapping("/takerAccept")
+    public Map<String, Object> takerAccept(Long id, Long acceptId) {
         UpdateWrapper<Task> wrapper = new UpdateWrapper<>();
-        wrapper.setSql("accept_user_id=" + user.getId())
+        wrapper.setSql("accept_user_id=" + acceptId)
                 .setSql("order_time=now()")
                 .setSql("state=1")
                 .eq("id", id);
