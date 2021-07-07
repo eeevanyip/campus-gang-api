@@ -1,5 +1,6 @@
 # campus-gang-api
 基于SpringBoot+Mybatis-Plus, 校园帮后台API
+
 需要配合web使用: https://github.com/GitQnanYe/campus-gang-web
 
  **1. 编写目的**
