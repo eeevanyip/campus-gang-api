@@ -1,6 +1,8 @@
 # campus-gang-api
 基于SpringBoot+Mybatis-Plus, 校园帮后台API
 
+需要配合web使用: https://github.com/GitQnanYe/campus-gang-web
+
  **1. 编写目的**
  
 该文档首先给出项目的整体结构和功能结构概貌，试图从总体架构上给出整个系统的轮廓。同时对功能需求、性能需求进行了详细的描述。便于用户、开发人员进行理解和交流，反映出用户问题的结构，可以作为软件开发工作的基础和依据以及确认测试和验收的依据。
