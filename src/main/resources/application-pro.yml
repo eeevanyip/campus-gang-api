@@ -17,6 +17,3 @@ spring:
       web-stat-filter:
         enabled: true
         url-pattern: /*
-logging:
-  level:
-    com.yqn.mapper: debug
