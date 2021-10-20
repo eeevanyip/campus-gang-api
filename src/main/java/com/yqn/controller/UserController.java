@@ -26,6 +26,11 @@ public class UserController {
     private PocketMoney money;
 
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello Word";
+    }
+
     // 检查登录
     @GetMapping("/login")
     public Map<String, Object> checkUserLogin(User checkUser, HttpSession session) {
