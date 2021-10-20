@@ -32,7 +32,7 @@ public class TaskController {
     @Autowired
     private PocketMoney money;
 
-    // 获取当前登录user所在学校的任务
+    // 获取当前登录user所在学校的任务, id為空則獲取全部
     @GetMapping
     public Map<String, Object> tasks(Long id) {
         User user = userService.getById(id);
@@ -91,7 +91,6 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public Map<String, Object> delTask(@PathVariable Long id) {
         Task task = taskService.getById(id);
-        System.out.println(task);
         if (task != null) {
             taskService.removeById(id);
             money.transfer("balance=balance+", task.getReward(), task.getPublish().getStudentId());

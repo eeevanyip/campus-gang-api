@@ -1,3 +1,6 @@
 spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
   profiles:
-    active: dev
+    active: pro

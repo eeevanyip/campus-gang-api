@@ -14,7 +14,7 @@ import java.util.Date;
 @Data
 @ToString
 public class Admin {
-    @TableId(value = "id",type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     private String account;
     private String password;
