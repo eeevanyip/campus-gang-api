@@ -26,10 +26,10 @@ public class UserController {
     private PocketMoney money;
 
 
-    /*@GetMapping("/hello")
+    @GetMapping("/hello")
     public String hello() {
         return "Hello Word";
-    }*/
+    }
 
     // 检查登录
     @GetMapping("/login")
