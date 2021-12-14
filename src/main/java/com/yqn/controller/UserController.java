@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping("/hello")
     public String hello() {
-        return "Hello Word 19:12";
+        return "Hello Word 17:38";
     }
 
     // 检查登录
